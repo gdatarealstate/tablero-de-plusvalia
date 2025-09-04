@@ -10,7 +10,7 @@ import requests
 from io import BytesIO
 
 # Definir constantes para las URLs de GitHub
-GITHUB_RAW_BASE_URL = "https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/"
+GITHUB_RAW_BASE_URL = "https://raw.githubusercontent.com/gdatarealstate/tablero-de-plusvalia/main/"
 UNIDADES_URL = f"{GITHUB_RAW_BASE_URL}backend/unidades_disponibles.xlsx"
 PLUSVALIA_URL = f"{GITHUB_RAW_BASE_URL}backend/plusvalia_de_proyectos.xlsx"
 INSTRUMENTOS_URL = f"{GITHUB_RAW_BASE_URL}backend/instrumentos_financieros.xlsx"

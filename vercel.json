@@ -40,6 +40,6 @@
     }
   ],
   "env": {
-    "GITHUB_RAW_BASE_URL": "https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/"
+    "GITHUB_RAW_BASE_URL": "https://raw.githubusercontent.com/gdatarealstate/tablero-de-plusvalia/main/"
   }
 }
