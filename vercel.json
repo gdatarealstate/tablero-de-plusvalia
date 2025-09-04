@@ -38,5 +38,8 @@
       "src": "/(.*)",
       "dest": "frontend/build/$1"
     }
-  ]
+  ],
+  "env": {
+    "GITHUB_RAW_BASE_URL": "https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/"
+  }
 }

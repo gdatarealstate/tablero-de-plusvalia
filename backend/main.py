@@ -6,6 +6,14 @@ from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import os
 import numpy as np
+import requests
+from io import BytesIO
+
+# Definir constantes para las URLs de GitHub
+GITHUB_RAW_BASE_URL = "https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/"
+UNIDADES_URL = f"{GITHUB_RAW_BASE_URL}backend/unidades_disponibles.xlsx"
+PLUSVALIA_URL = f"{GITHUB_RAW_BASE_URL}backend/plusvalia_de_proyectos.xlsx"
+INSTRUMENTOS_URL = f"{GITHUB_RAW_BASE_URL}backend/instrumentos_financieros.xlsx"
 
 app = FastAPI() 
 
@@ -22,11 +30,20 @@ class Inputs(BaseModel):
     tiempo: int
     proyecto: str
 
+def cargar_excel_desde_github(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        return pd.read_excel(BytesIO(response.content))
+    else:
+        raise HTTPException(status_code=500, detail=f"Error al cargar datos desde GitHub: {response.status_code}")
+
 @app.post("/calcular")
 def calcular(inputs: Inputs):
     # Cargar datos de unidades disponibles
-    excel_path = "unidades_disponibles.xlsx"
-    df_unidades = pd.read_excel(excel_path)
+    try:
+        df_unidades = cargar_excel_desde_github(UNIDADES_URL)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al cargar unidades: {str(e)}")
     
     # Verificar que la unidad exista y pertenezca al proyecto seleccionado
     if inputs.unidad_id < 0 or inputs.unidad_id >= len(df_unidades):
@@ -47,8 +64,11 @@ def calcular(inputs: Inputs):
     superficie = unidad_seleccionada["Superficie"]
     
     # Cargar datos del proyecto seleccionado
-    excel_path = os.path.join(os.path.dirname(__file__), "plusvalia_de_proyectos.xlsx")
-    df_proyectos = pd.read_excel(excel_path)
+    try:
+        df_proyectos = cargar_excel_desde_github(PLUSVALIA_URL)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al cargar datos de proyectos: {str(e)}")
+    
     datos_proyecto = df_proyectos[df_proyectos["Proyectos"] == inputs.proyecto]
     
     if datos_proyecto.empty:
@@ -120,8 +140,10 @@ def calcular(inputs: Inputs):
 @app.get("/proyectos")
 def obtener_proyectos():
     # Cargar el archivo Excel de proyectos
-    excel_path = "plusvalia_de_proyectos.xlsx"
-    df_proyectos = pd.read_excel(excel_path)
+    try:
+        df_proyectos = cargar_excel_desde_github(PLUSVALIA_URL)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al cargar proyectos: {str(e)}")
     
     # Obtener lista única de proyectos
     proyectos_unicos = df_proyectos["Proyectos"].unique().tolist()
@@ -141,18 +163,21 @@ def obtener_proyectos():
 
 @app.get("/instrumentos")
 def obtener_instrumentos():
-    # Mantenemos este endpoint para compatibilidad con el frontend existente
-    # pero ya no usaremos los instrumentos financieros
-    excel_path = "instrumentos_financieros.xlsx"
-    df_instrumentos = pd.read_excel(excel_path)
+    try:
+        df_instrumentos = cargar_excel_desde_github(INSTRUMENTOS_URL)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al cargar instrumentos: {str(e)}")
+    
     instrumentos_data = df_instrumentos.to_dict(orient="records")
     return {"instrumentos": instrumentos_data}
 
 @app.get("/unidades")
 def obtener_unidades(proyecto: str = None):
     # Cargar el archivo Excel de unidades
-    excel_path = os.path.join(os.path.dirname(__file__), "unidades_disponibles.xlsx")
-    df_unidades = pd.read_excel(excel_path)
+    try:
+        df_unidades = cargar_excel_desde_github(UNIDADES_URL)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al cargar unidades: {str(e)}")
     
     # Filtrar por proyecto si se especifica
     if proyecto:
