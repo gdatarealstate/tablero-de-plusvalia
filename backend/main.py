@@ -25,7 +25,7 @@ class Inputs(BaseModel):
 @app.post("/calcular")
 def calcular(inputs: Inputs):
     # Cargar datos de unidades disponibles
-    excel_path = os.path.join(os.path.dirname(__file__), "unidades_disponibles.xlsx")
+    excel_path = "unidades_disponibles.xlsx"
     df_unidades = pd.read_excel(excel_path)
     
     # Verificar que la unidad exista y pertenezca al proyecto seleccionado
@@ -120,7 +120,7 @@ def calcular(inputs: Inputs):
 @app.get("/proyectos")
 def obtener_proyectos():
     # Cargar el archivo Excel de proyectos
-    excel_path = os.path.join(os.path.dirname(__file__), "plusvalia_de_proyectos.xlsx")
+    excel_path = "plusvalia_de_proyectos.xlsx"
     df_proyectos = pd.read_excel(excel_path)
     
     # Obtener lista única de proyectos
@@ -143,7 +143,7 @@ def obtener_proyectos():
 def obtener_instrumentos():
     # Mantenemos este endpoint para compatibilidad con el frontend existente
     # pero ya no usaremos los instrumentos financieros
-    excel_path = os.path.join(os.path.dirname(__file__), "instrumentos_financieros.xlsx")
+    excel_path = "instrumentos_financieros.xlsx"
     df_instrumentos = pd.read_excel(excel_path)
     instrumentos_data = df_instrumentos.to_dict(orient="records")
     return {"instrumentos": instrumentos_data}

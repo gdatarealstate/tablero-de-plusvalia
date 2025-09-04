@@ -6,14 +6,32 @@
       "use": "@vercel/python"
     },
     {
-      "src": "frontend/package.json",
+      "src": "frontend/src/*",
       "use": "@vercel/static-build",
-      "config": { "distDir": "build" }
+      "config": {
+        "distDir": "frontend/build"
+      }
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
+      "dest": "backend/main.py"
+    },
+    {
+      "src": "/calcular",
+      "dest": "backend/main.py"
+    },
+    {
+      "src": "/proyectos",
+      "dest": "backend/main.py"
+    },
+    {
+      "src": "/unidades",
+      "dest": "backend/main.py"
+    },
+    {
+      "src": "/instrumentos",
       "dest": "backend/main.py"
     },
     {
