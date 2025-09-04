@@ -1,0 +1,7 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+h1 {
+  color: $primary-color;
+  margin-bottom: 20px;
+}

@@ -1,0 +1,15 @@
+@mixin card-shadow {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin responsive-flex($gap: 20px) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $gap;
+}

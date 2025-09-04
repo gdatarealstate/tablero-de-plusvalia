@@ -1,0 +1,48 @@
+@import 'variables';
+@import 'mixins';
+
+// Estilos globales
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: $text-color;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f2f5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+// Contenedor principal
+#root {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+// Estilos tipográficos
+h1, h2, h3 {
+  margin-top: 0;
+}
+
+h1 {
+  color: $primary-color;
+}
+
+// Utilidades generales
+.container {
+  padding: $spacing-md;
+}
+
+.card {
+  background: white;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  @include card-shadow;
+}
+
+.text-center {
+  text-align: center;
+}
