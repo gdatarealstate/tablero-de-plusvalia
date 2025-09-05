@@ -71,7 +71,7 @@ function InputForm({ onCalcular, proyectos }) {
       tiempo: tiempo,
       precio: unidadSeleccionada.precio,
       superficie: unidadSeleccionada.superficie,
-      enganche: unidadSeleccionada.enganche_valor
+      enganche: unidadSeleccionada.enganche
     });
   };
 
