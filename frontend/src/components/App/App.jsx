@@ -10,11 +10,14 @@ function App() {
   const [unidades, setUnidades] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [proyectoSeleccionado, setProyectoSeleccionado] = useState("");
+  const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? '' 
+  : 'http://localhost:8000';
 
   useEffect(() => {
     const cargarProyectos = async () => {
       try {
-        const resProyectos = await axios.get("/api/proyectos");
+        const resProyectos = await axios.get(`${API_BASE_URL}/api/proyectos`);
         setProyectos(resProyectos.data.proyectos);
         
         if (resProyectos.data.proyectos.length > 0) {
@@ -32,7 +35,7 @@ function App() {
 
   const cargarUnidades = async (proyecto) => {
     try {
-      const resUnidades = await axios.get(`/api/unidades?proyecto=${proyecto}`);
+      const resUnidades = await axios.get(`${API_BASE_URL}/api/unidades`);
       setUnidades(resUnidades.data.unidades);
     } catch (error) {
       console.error(`Error al cargar unidades para ${proyecto}:`, error);
@@ -49,7 +52,7 @@ const calcular = async (inputs) => {
   setIsLoading(true);
   try {
     console.log("Enviando datos a la API:", inputs);
-    const res = await axios.post("/api/calcular", inputs);
+    const res = await axios.get(`${API_BASE_URL}/api/calcular`);
     console.log("Respuesta de la API:", res.data);
     setResult({
       valores: res.data.valores,
