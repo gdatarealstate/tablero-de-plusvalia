@@ -17,16 +17,19 @@ function App() {
   useEffect(() => {
     const cargarProyectos = async () => {
       try {
+        setIsLoading(true);
         const resProyectos = await axios.get(`${API_BASE_URL}/api/proyectos`);
         setProyectos(resProyectos.data.proyectos);
         
         if (resProyectos.data.proyectos.length > 0) {
           const primerProyecto = resProyectos.data.proyectos[0].nombre;
           setProyectoSeleccionado(primerProyecto);
-          cargarUnidades(primerProyecto);
+          await cargarUnidades(primerProyecto);
         }
       } catch (error) {
         console.error("Error al cargar proyectos:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     
@@ -35,11 +38,14 @@ function App() {
 
   const cargarUnidades = async (proyecto) => {
     try {
-      const resUnidades = await axios.get(`${API_BASE_URL}/api/unidades`);
-      setUnidades(resUnidades.data.unidades);
+      setIsLoading(true);
+      const resUnidades = await axios.get(`${API_BASE_URL}/api/unidades?proyecto=${proyecto}`);
+      setUnidades(resUnidades.data.unidades.filter(u => u.proyecto === proyecto));
     } catch (error) {
       console.error(`Error al cargar unidades para ${proyecto}:`, error);
       setUnidades([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -52,7 +58,11 @@ const calcular = async (inputs) => {
   setIsLoading(true);
   try {
     console.log("Enviando datos a la API:", inputs);
-    const res = await axios.get(`${API_BASE_URL}/api/calcular`);
+    const res = await axios.post(`${API_BASE_URL}/api/calcular`, {
+      unidad_id: parseInt(inputs.unidad_id),
+      tiempo: inputs.tiempo,
+      proyecto: inputs.proyecto
+    });
     console.log("Respuesta de la API:", res.data);
     setResult({
       valores: res.data.valores,
@@ -65,6 +75,7 @@ const calcular = async (inputs) => {
     console.error("Error en la API:", error);
     if (error.response) {
       console.error("Detalles del error:", error.response.data);
+      alert(`Error: ${error.response.data.detail || 'Hubo un problema al procesar tu solicitud'}`);
     }
   } finally {
     setIsLoading(false);
