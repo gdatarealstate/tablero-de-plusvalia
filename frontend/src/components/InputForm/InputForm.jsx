@@ -22,7 +22,7 @@ function InputForm({ onCalcular, proyectos }) {
     const cargarUnidades = async () => {
       if (inputs.proyecto) {
         try {
-          const response = await axios.get(`/unidades?proyecto=${inputs.proyecto}`);
+          const response = await axios.get(`/api/unidades?proyecto=${inputs.proyecto}`);
           setUnidadesDisponibles(response.data.unidades);
           
           // Seleccionar la primera unidad por defecto si hay unidades disponibles

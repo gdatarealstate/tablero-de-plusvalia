@@ -15,7 +15,7 @@ useEffect(() => {
   const cargarProyectos = async () => {
     try {
       // Usar la URL completa para evitar problemas de ruta
-      const resProyectos = await axios.get("/proyectos");
+      const resProyectos = await axios.get("/api/proyectos");
       setProyectos(resProyectos.data.proyectos);
       
       if (resProyectos.data.proyectos.length > 0) {
@@ -33,7 +33,7 @@ useEffect(() => {
 
   const cargarUnidades = async (proyecto) => {
     try {
-      const resUnidades = await axios.get(`/unidades?proyecto=${proyecto}`);
+      const resUnidades = await axios.get(`/api/unidades?proyecto=${proyecto}`);
       setUnidades(resUnidades.data.unidades);
     } catch (error) {
       console.error(`Error al cargar unidades para ${proyecto}:`, error);
@@ -50,7 +50,7 @@ const calcular = async (inputs) => {
   setIsLoading(true);
   try {
     console.log("Enviando datos a la API:", inputs);
-    const res = await axios.post("/calcular", inputs);
+    const res = await axios.post("/api/calcular", inputs);
     console.log("Respuesta de la API:", res.data);
     setResult({
       valores: res.data.valores,

@@ -10,7 +10,7 @@ import requests
 from io import BytesIO
 
 # Definir constantes para las URLs de GitHub
-GITHUB_RAW_BASE_URL = "https://raw.githubusercontent.com/gdatarealstate/tablero-de-plusvalia/main/"
+GITHUB_RAW_BASE_URL = os.getenv("GITHUB_RAW_BASE_URL", "https://raw.githubusercontent.com/gdatarealstate/tablero-de-plusvalia/main/")
 UNIDADES_URL = f"{GITHUB_RAW_BASE_URL}backend/unidades_disponibles.xlsx"
 PLUSVALIA_URL = f"{GITHUB_RAW_BASE_URL}backend/plusvalia_de_proyectos.xlsx"
 INSTRUMENTOS_URL = f"{GITHUB_RAW_BASE_URL}backend/instrumentos_financieros.xlsx"
@@ -205,11 +205,12 @@ def obtener_unidades(proyecto: str = None):
 def health_check():
     return {"status": "OK", "message": "API is running"}
 
-# Añadir este middleware para manejar correctamente las rutas en Vercel
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
-    # Redirigir solicitudes de API
-    if request.url.path.startswith("/api/"):
-        request.scope["path"] = request.url.path[4:]  # Quitar el prefijo "/api/"
+    path = request.url.path
+    if path.startswith("/api/"):
+        # Remover el prefijo "/api/" y actualizar la ruta
+        request.scope["path"] = path[4:]
+    
     response = await call_next(request)
     return response
