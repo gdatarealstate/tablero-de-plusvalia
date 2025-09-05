@@ -19,24 +19,20 @@
       "dest": "backend/main.py"
     },
     {
-      "src": "/calcular",
+      "src": "/(calcular|proyectos|unidades|instrumentos)",
       "dest": "backend/main.py"
     },
     {
-      "src": "/proyectos",
-      "dest": "backend/main.py"
+      "src": "/static/(.*)",
+      "dest": "frontend/build/static/$1"
     },
     {
-      "src": "/unidades",
-      "dest": "backend/main.py"
-    },
-    {
-      "src": "/instrumentos",
-      "dest": "backend/main.py"
+      "src": "/(.*\\.(js|json|css|ico|png))",
+      "dest": "frontend/build/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "frontend/build/$1"
+      "dest": "frontend/build/index.html"
     }
   ],
   "env": {

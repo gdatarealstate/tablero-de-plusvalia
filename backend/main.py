@@ -1,8 +1,8 @@
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import pandas as pd
 import os
 import numpy as np
@@ -15,11 +15,12 @@ UNIDADES_URL = f"{GITHUB_RAW_BASE_URL}backend/unidades_disponibles.xlsx"
 PLUSVALIA_URL = f"{GITHUB_RAW_BASE_URL}backend/plusvalia_de_proyectos.xlsx"
 INSTRUMENTOS_URL = f"{GITHUB_RAW_BASE_URL}backend/instrumentos_financieros.xlsx"
 
-app = FastAPI() 
+app = FastAPI()
 
+# Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En producción, limitarlo a tu dominio
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -203,3 +204,12 @@ def obtener_unidades(proyecto: str = None):
 @app.get("/api/health")
 def health_check():
     return {"status": "OK", "message": "API is running"}
+
+# Añadir este middleware para manejar correctamente las rutas en Vercel
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    # Redirigir solicitudes de API
+    if request.url.path.startswith("/api/"):
+        request.scope["path"] = request.url.path[4:]  # Quitar el prefijo "/api/"
+    response = await call_next(request)
+    return response
