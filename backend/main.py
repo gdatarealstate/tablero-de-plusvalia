@@ -31,12 +31,16 @@ class Inputs(BaseModel):
     tiempo: int
     proyecto: str
 
+# Mejorar la función de carga para más detalles de error
 def cargar_excel_desde_github(url):
+    print(f"Intentando cargar datos desde: {url}")
     response = requests.get(url)
     if response.status_code == 200:
         return pd.read_excel(BytesIO(response.content))
     else:
-        raise HTTPException(status_code=500, detail=f"Error al cargar datos desde GitHub: {response.status_code}")
+        error_mensaje = f"Error al cargar datos desde GitHub: {response.status_code}. URL: {url}"
+        print(error_mensaje)
+        raise HTTPException(status_code=500, detail=error_mensaje)
 
 @app.post("/calcular")
 def calcular(inputs: Inputs):
@@ -208,9 +212,18 @@ def health_check():
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     path = request.url.path
+    
+    # Maneja correctamente las solicitudes API
     if path.startswith("/api/"):
         # Remover el prefijo "/api/" y actualizar la ruta
         request.scope["path"] = path[4:]
-    
+        
     response = await call_next(request)
     return response
+
+@app.exception_handler(404)
+async def custom_404_handler(request, exc):
+    return JSONResponse(
+        status_code=404,
+        content={"message": f"Ruta '{request.url}' no encontrada. Verifica que estás accediendo a una ruta correcta."}
+    )
