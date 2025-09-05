@@ -11,25 +11,24 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [proyectoSeleccionado, setProyectoSeleccionado] = useState("");
 
-useEffect(() => {
-  const cargarProyectos = async () => {
-    try {
-      // Usar la URL completa para evitar problemas de ruta
-      const resProyectos = await axios.get("/api/proyectos");
-      setProyectos(resProyectos.data.proyectos);
-      
-      if (resProyectos.data.proyectos.length > 0) {
-        const primerProyecto = resProyectos.data.proyectos[0].nombre;
-        setProyectoSeleccionado(primerProyecto);
-        cargarUnidades(primerProyecto);
+  useEffect(() => {
+    const cargarProyectos = async () => {
+      try {
+        const resProyectos = await axios.get("/api/proyectos");
+        setProyectos(resProyectos.data.proyectos);
+        
+        if (resProyectos.data.proyectos.length > 0) {
+          const primerProyecto = resProyectos.data.proyectos[0].nombre;
+          setProyectoSeleccionado(primerProyecto);
+          cargarUnidades(primerProyecto);
+        }
+      } catch (error) {
+        console.error("Error al cargar proyectos:", error);
       }
-    } catch (error) {
-      console.error("Error al cargar proyectos:", error);
-    }
-  };
-  
-  cargarProyectos();
-}, []);
+    };
+    
+    cargarProyectos();
+  }, []);
 
   const cargarUnidades = async (proyecto) => {
     try {
