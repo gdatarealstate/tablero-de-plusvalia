@@ -22,10 +22,25 @@ class Inputs(BaseModel):
     tiempo: int
     proyecto: str
 
-@app.post("/calcular")
+def get_excel_path(filename):
+    """Función auxiliar para manejar rutas de archivos Excel en diferentes entornos"""
+    if os.getenv('VERCEL_ENV'):
+        tmp_path = f"/tmp/{filename}"
+        # Cargar desde GitHub si no existe localmente
+        if not os.path.exists(tmp_path):
+            import urllib.request
+            github_raw_url = f"https://raw.githubusercontent.com/gdatarealstate/tablero-de-inversion/main/backend/{filename}"
+            urllib.request.urlretrieve(github_raw_url, tmp_path)
+        return tmp_path
+    
+    else:
+        # Entorno de desarrollo local
+        return os.path.join(os.path.dirname(__file__), filename)
+
+@app.post("/api/calcular")
 def calcular(inputs: Inputs):
     # Cargar datos de unidades disponibles
-    excel_path = os.path.join(os.path.dirname(__file__), "unidades_disponibles.xlsx")
+    excel_path = get_excel_path("unidades_disponibles.xlsx")
     df_unidades = pd.read_excel(excel_path)
     
     # Verificar que la unidad exista y pertenezca al proyecto seleccionado
@@ -47,7 +62,7 @@ def calcular(inputs: Inputs):
     superficie = unidad_seleccionada["Superficie"]
     
     # Cargar datos del proyecto seleccionado
-    excel_path = os.path.join(os.path.dirname(__file__), "plusvalia_de_proyectos.xlsx")
+    excel_path = get_excel_path("plusvalia_de_proyectos.xlsx")
     df_proyectos = pd.read_excel(excel_path)
     datos_proyecto = df_proyectos[df_proyectos["Proyectos"] == inputs.proyecto]
     
@@ -117,10 +132,10 @@ def calcular(inputs: Inputs):
         "unidad_info": unidad_info
     }
 
-@app.get("/proyectos")
+@app.get("/api/proyectos")
 def obtener_proyectos():
     # Cargar el archivo Excel de proyectos
-    excel_path = os.path.join(os.path.dirname(__file__), "plusvalia_de_proyectos.xlsx")
+    excel_path = get_excel_path("plusvalia_de_proyectos.xlsx")
     df_proyectos = pd.read_excel(excel_path)
     
     # Obtener lista única de proyectos
@@ -139,19 +154,19 @@ def obtener_proyectos():
     
     return {"proyectos": proyectos_data}
 
-@app.get("/instrumentos")
+@app.get("/api/instrumentos")
 def obtener_instrumentos():
     # Mantenemos este endpoint para compatibilidad con el frontend existente
     # pero ya no usaremos los instrumentos financieros
-    excel_path = os.path.join(os.path.dirname(__file__), "instrumentos_financieros.xlsx")
+    excel_path = get_excel_path("instrumentos_financieros.xlsx")
     df_instrumentos = pd.read_excel(excel_path)
     instrumentos_data = df_instrumentos.to_dict(orient="records")
     return {"instrumentos": instrumentos_data}
 
-@app.get("/unidades")
+@app.get("/api/unidades")
 def obtener_unidades(proyecto: str = None):
     # Cargar el archivo Excel de unidades
-    excel_path = os.path.join(os.path.dirname(__file__), "unidades_disponibles.xlsx")
+    excel_path = get_excel_path("unidades_disponibles.xlsx")
     df_unidades = pd.read_excel(excel_path)
     
     # Filtrar por proyecto si se especifica
