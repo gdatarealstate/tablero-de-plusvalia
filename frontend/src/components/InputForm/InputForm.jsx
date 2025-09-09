@@ -9,8 +9,8 @@ function InputForm({ onCalcular, proyectos }) {
   });
   const [unidadesDisponibles, setUnidadesDisponibles] = useState([]);
   const [tiempo, setTiempo] = useState(5);
-  const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '' 
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? '/api' 
   : 'http://localhost:8000';
 
   // Cargar proyectos iniciales
