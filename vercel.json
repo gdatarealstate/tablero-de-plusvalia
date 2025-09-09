@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "framework": "vite",
   "builds": [
     {
       "src": "backend/main.py",
@@ -9,31 +10,22 @@
       "src": "frontend/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "build"
+        "distDir": "dist"
       }
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "backend/main.py"
+      "dest": "/backend/main.py"
     },
     {
-      "src": "/(assets|static)/(.*)",
-      "dest": "frontend/build/$1/$2"
+      "src": "/(assets|images|css|js|favicon\\.ico)/(.*)",
+      "dest": "/frontend/dist/$1/$2"
     },
     {
-      "src": "/favicon.ico",
-      "dest": "frontend/build/favicon.ico"
+      "src": "/(.*)",
+      "dest": "/frontend/dist/index.html"
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "env": {
-    "VERCEL_ENV": "production"
-  }
+  ]
 }
