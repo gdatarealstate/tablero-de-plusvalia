@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "framework": "vite",
   "builds": [
     {
       "src": "backend/main.py",
@@ -10,22 +9,22 @@
       "src": "frontend/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist"
+        "buildCommand": "cd frontend && npm install && npm run build",
+        "outputDirectory": "frontend/dist"
       }
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/backend/main.py"
+      "dest": "backend/main.py"
     },
     {
-      "src": "/(assets|images|css|js|favicon\\.ico)/(.*)",
-      "dest": "/frontend/dist/$1/$2"
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "/frontend/dist/index.html"
+      "dest": "frontend/dist/$1"
     }
   ]
 }
