@@ -31,6 +31,9 @@
       "dest": "frontend/build/index.html"
     }
   ],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
   "env": {
     "VERCEL_ENV": "production"
   }
