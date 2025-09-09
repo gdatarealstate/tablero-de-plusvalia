@@ -10,7 +10,9 @@ function App() {
   const [unidades, setUnidades] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [proyectoSeleccionado, setProyectoSeleccionado] = useState("");
- const API_BASE_URL = import.meta.env.PROD ? '' : 'http://localhost:8000';
+  const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? '' 
+  : 'http://localhost:8000';
 
   useEffect(() => {
     const cargarProyectos = async () => {

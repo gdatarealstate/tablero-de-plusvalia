@@ -9,7 +9,6 @@ function InputForm({ onCalcular, proyectos }) {
   });
   const [unidadesDisponibles, setUnidadesDisponibles] = useState([]);
   const [tiempo, setTiempo] = useState(5);
-  const API_BASE_URL = import.meta.env.PROD ? '' : 'http://localhost:8000';
 
   // Cargar proyectos iniciales
   useEffect(() => {
@@ -23,7 +22,7 @@ function InputForm({ onCalcular, proyectos }) {
     const cargarUnidades = async () => {
       if (inputs.proyecto) {
         try {
-          const response = await axios.get(`${API_BASE_URL}/api/unidades?proyecto=${inputs.proyecto}`);
+          const response = await axios.get(`/api/unidades?proyecto=${inputs.proyecto}`);
           setUnidadesDisponibles(response.data.unidades);
           
           // Seleccionar la primera unidad por defecto si hay unidades disponibles
