@@ -28,16 +28,11 @@ def get_excel_path(filename):
         tmp_path = f"/tmp/{filename}"
         # Cargar desde GitHub si no existe localmente
         if not os.path.exists(tmp_path):
-            try:
-                import urllib.request
-                github_raw_url = f"https://raw.githubusercontent.com/gdatarealstate/tablero-de-inversion/main/backend/{filename}"
-                urllib.request.urlretrieve(github_raw_url, tmp_path)
-                print(f"Archivo {filename} descargado correctamente de GitHub")
-            except Exception as e:
-                print(f"Error al descargar {filename} desde GitHub: {str(e)}")
-                # Intentar con una ruta alternativa si falla
-                return os.path.join("/tmp", filename)
+            import urllib.request
+            github_raw_url = f"https://raw.githubusercontent.com/gdatarealstate/tablero-de-inversion/main/backend/{filename}"
+            urllib.request.urlretrieve(github_raw_url, tmp_path)
         return tmp_path
+    
     else:
         # Entorno de desarrollo local
         return os.path.join(os.path.dirname(__file__), filename)

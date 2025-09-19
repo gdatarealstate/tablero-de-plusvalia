@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import './InputForm.scss';
 import axios from "axios";
 
-function InputForm({ onCalcular, proyectos, onProyectoChange, apiBaseUrl }) {
+function InputForm({ onCalcular, proyectos }) {
   const [inputs, setInputs] = useState({
     proyecto: proyectos?.length > 0 ? proyectos[0]?.nombre : "",
     unidadId: ""
@@ -22,7 +22,7 @@ function InputForm({ onCalcular, proyectos, onProyectoChange, apiBaseUrl }) {
     const cargarUnidades = async () => {
       if (inputs.proyecto) {
         try {
-          const response = await axios.get(`${apiBaseUrl}/api/unidades?proyecto=${inputs.proyecto}`);
+          const response = await axios.get(`/api/unidades?proyecto=${inputs.proyecto}`);
           setUnidadesDisponibles(response.data.unidades);
           
           // Seleccionar la primera unidad por defecto si hay unidades disponibles
