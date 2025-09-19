@@ -11,8 +11,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [proyectoSeleccionado, setProyectoSeleccionado] = useState("");
   const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '' 
-  : 'http://localhost:8000';
+    ? '/api' 
+    : 'http://localhost:8000';
 
   useEffect(() => {
     const cargarProyectos = async () => {
@@ -90,6 +90,7 @@ const calcular = async (inputs) => {
         proyectos={proyectos} 
         unidades={unidades}
         onProyectoChange={handleProyectoChange}
+        apiBaseUrl={API_BASE_URL}
       />
       {isLoading && <p>Cargando resultados...</p>}
       {result && <ResultChart data={result} />}
