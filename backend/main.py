@@ -193,16 +193,3 @@ def obtener_unidades(proyecto: str = None):
 @app.get("/api/health")
 def health_check():
     return {"status": "OK", "message": "API is running"}
-
-@app.get("/")
-def root():
-    return {
-        "message": "Bienvenido a la API del Tablero de Plusvalía 🚀",
-        "endpoints": {
-            "calcular": "/api/calcular",
-            "proyectos": "/api/proyectos",
-            "unidades": "/api/unidades",
-            "instrumentos": "/api/instrumentos",
-            "health": "/api/health"
-        }
-    }
