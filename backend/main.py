@@ -11,10 +11,13 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En producción, limitarlo a tu dominio
+    allow_origins=[
+    "https://tablero-de-plusvalia.vercel.app/", # your deployed frontend
+    "http://localhost:3000" # local React dev server
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=[""],
+    allow_headers=[""],
 )
 
 class Inputs(BaseModel):
@@ -22,20 +25,10 @@ class Inputs(BaseModel):
     tiempo: int
     proyecto: str
 
-def get_excel_path(filename):
-    """Función auxiliar para manejar rutas de archivos Excel en diferentes entornos"""
-    if os.getenv('VERCEL_ENV'):
-        tmp_path = f"/tmp/{filename}"
-        # Cargar desde GitHub si no existe localmente
-        if not os.path.exists(tmp_path):
-            import urllib.request
-            github_raw_url = f"https://raw.githubusercontent.com/gdatarealstate/tablero-de-inversion/main/backend/{filename}"
-            urllib.request.urlretrieve(github_raw_url, tmp_path)
-        return tmp_path
-    
-    else:
-        # Entorno de desarrollo local
-        return os.path.join(os.path.dirname(__file__), filename)
+def get_excel_path(filename: str):
+# Always look inside backend/data/
+    base_path = os.path.join(os.path.dirname(file), "data")
+    return os.path.join(base_path, filename)
 
 @app.post("/api/calcular")
 def calcular(inputs: Inputs):

@@ -4,15 +4,15 @@ import axios from "axios";
 import InputForm from "../InputForm/InputForm";
 import ResultChart from "../ResultChart/ResultChart";
 
+// Single source of truth for API URL
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
+
 function App() {
   const [result, setResult] = useState(null);
   const [proyectos, setProyectos] = useState([]);
   const [unidades, setUnidades] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [proyectoSeleccionado, setProyectoSeleccionado] = useState("");
-  const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '' 
-  : 'http://localhost:8000';
 
   useEffect(() => {
     const cargarProyectos = async () => {
@@ -20,7 +20,7 @@ function App() {
         setIsLoading(true);
         const resProyectos = await axios.get(`${API_BASE_URL}/api/proyectos`);
         setProyectos(resProyectos.data.proyectos);
-        
+
         if (resProyectos.data.proyectos.length > 0) {
           const primerProyecto = resProyectos.data.proyectos[0].nombre;
           setProyectoSeleccionado(primerProyecto);
@@ -32,7 +32,7 @@ function App() {
         setIsLoading(false);
       }
     };
-    
+
     cargarProyectos();
   }, []);
 
@@ -54,33 +54,31 @@ function App() {
     cargarUnidades(proyecto);
   };
 
-const calcular = async (inputs) => {
-  setIsLoading(true);
-  try {
-    console.log("Enviando datos a la API:", inputs);
-    const res = await axios.post(`${API_BASE_URL}/api/calcular`, {
-      unidad_id: parseInt(inputs.unidad_id),
-      tiempo: inputs.tiempo,
-      proyecto: inputs.proyecto
-    });
-    console.log("Respuesta de la API:", res.data);
-    setResult({
-      valores: res.data.valores,
-      inputs: inputs,
-      proyecto_seleccionado: res.data.proyecto_seleccionado,
-      plusvalias_anuales: res.data.plusvalias_anuales,
-      unidad: res.data.unidad_info
-    });
-  } catch (error) {
-    console.error("Error en la API:", error);
-    if (error.response) {
-      console.error("Detalles del error:", error.response.data);
-      alert(`Error: ${error.response.data.detail || 'Hubo un problema al procesar tu solicitud'}`);
+  const calcular = async (inputs) => {
+    setIsLoading(true);
+    try {
+      const res = await axios.post(`${API_BASE_URL}/api/calcular`, {
+        unidad_id: parseInt(inputs.unidad_id),
+        tiempo: inputs.tiempo,
+        proyecto: inputs.proyecto
+      });
+
+      setResult({
+        valores: res.data.valores,
+        inputs: inputs,
+        proyecto_seleccionado: res.data.proyecto_seleccionado,
+        plusvalias_anuales: res.data.plusvalias_anuales,
+        unidad: res.data.unidad_info
+      });
+    } catch (error) {
+      console.error("Error en la API:", error);
+      if (error.response) {
+        alert(`Error: ${error.response.data.detail || 'Hubo un problema al procesar tu solicitud'}`);
+      }
+    } finally {
+      setIsLoading(false);
     }
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   return (
     <div>
