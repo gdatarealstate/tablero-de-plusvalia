@@ -12,12 +12,12 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-    "https://tablero-de-plusvalia.vercel.app/", # your deployed frontend
-    "http://localhost:3000" # local React dev server
-    ],
+    "https://https://tablero-de-plusvalia.vercel.app/",      # your deployed frontend
+    "http://localhost:3000"           # local React dev server
+],
     allow_credentials=True,
-    allow_methods=[""],
-    allow_headers=[""],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 class Inputs(BaseModel):
@@ -26,9 +26,10 @@ class Inputs(BaseModel):
     proyecto: str
 
 def get_excel_path(filename: str):
-# Always look inside backend/data/
+    # Always look inside backend/data/
     base_path = os.path.join(os.path.dirname(__file__), "data")
     return os.path.join(base_path, filename)
+
 
 @app.post("/api/calcular")
 def calcular(inputs: Inputs):
