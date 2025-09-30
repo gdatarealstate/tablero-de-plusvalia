@@ -27,7 +27,7 @@ class Inputs(BaseModel):
 
 def get_excel_path(filename: str):
 # Always look inside backend/data/
-    base_path = os.path.join(os.path.dirname(file), "data")
+    base_path = os.path.join(os.path.dirname(__file__), "data")
     return os.path.join(base_path, filename)
 
 @app.post("/api/calcular")
