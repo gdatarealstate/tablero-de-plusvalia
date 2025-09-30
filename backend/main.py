@@ -12,7 +12,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-    "https://tablero-de-plusvalia.vercel.app/",      # your deployed frontend
+    "https://tablero-de-plusvalia.vercel.app",      # your deployed frontend
     "http://localhost:3000"           # local React dev server
 ],
     allow_credentials=True,
